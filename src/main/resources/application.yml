@@ -1,0 +1,30 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    # 可选，为应用取名
+    name: reggie
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource  # 要写这个，而不是像视频中druid: ....
+    url: jdbc:mysql://localhost:3306/reggie?characterEncoding=utf8&useSSL=false
+    username: root
+    password: wc123123
+
+
+  main:
+    allow-circular-references: true  # 循环注入的问题，比如serviceA注入了serviceB，B也注入了A。不加会报错。
+
+  configuration:
+    #在映射实体或者属性时，将数据库中表名和字段名中的下划线去掉，按照驼峰命名法映射
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+  global-config:
+    db-config:
+      id-type: ASSIGN_ID
+
+reggie:
+  path: /Users/limbo/Downloads/
