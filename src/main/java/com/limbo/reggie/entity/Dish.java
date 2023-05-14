@@ -2,6 +2,10 @@ package com.limbo.reggie.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -67,12 +71,16 @@ public class Dish implements Serializable {
     /**
      * 创建时间
      */
+//    @JsonDeserialize(using = LocalDateTimeDeserializer.class)   // 反序列化
+//    @JsonSerialize(using = LocalDateTimeSerializer.class)   // 序列化
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
     /**
      * 更新时间
      */
+//    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+//    @JsonSerialize(using = LocalDateTimeSerializer.class)
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
