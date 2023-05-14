@@ -13,6 +13,12 @@ spring:
     username: root
     password: wc123123
 
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      database: 0 # 操作0号数据库
+
 
   main:
     allow-circular-references: true  # 循环注入的问题，比如serviceA注入了serviceB，B也注入了A。不加会报错。
