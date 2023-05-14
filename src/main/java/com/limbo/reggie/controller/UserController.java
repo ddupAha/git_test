@@ -11,12 +11,14 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -33,6 +35,8 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    RedisTemplate redisTemplate;
 
     @PostMapping("/sendMsg")
     public Result<String> sendMsg(@RequestBody User user, HttpSession session){
@@ -43,7 +47,10 @@ public class UserController {
 
             // 调用阿里云API发送短信
 
-            session.setAttribute(user.getPhone(), code);
+//            session.setAttribute(user.getPhone(), code);
+
+            redisTemplate.opsForValue().set(user.getPhone(), code, 5, TimeUnit.MINUTES); // 使用redis缓存验证码
+
             return Result.success("发送验证码成功");
 
         }
@@ -60,7 +67,7 @@ public class UserController {
         // 判断验证码是否正确
         String code_real = null;
         if (code != null) {
-            code_real = (String) session.getAttribute(phone);
+            code_real = (String) redisTemplate.opsForValue().get(phone); // redis中取验证码
         }
         else
             return Result.error("验证码为空");
@@ -87,6 +94,7 @@ public class UserController {
                 userService.save(user);
             }
             session.setAttribute("user", user.getId());
+            redisTemplate.delete(phone); // 登录成功则删除缓存验证码
             return Result.success("登录成功");
         }
         return Result.error("登录失败");
